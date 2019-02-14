@@ -1,0 +1,37 @@
+<!doctype html>
+<html ng-app="arbncoApp" style="font-family: 'Roboto', sans-serif;" class="background-color">
+	<header>
+		<title>Arbnco - Weather Forecast</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        
+        <link rel="shortcut icon" href="img/favicon.png?012"/>
+
+        <!-- jQuery -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
+
+        <!-- AngularJS CDN -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular-route.js"></script>
+        <script src="js/app.js"></script>
+        <script src="services/dataService.js"></script>
+        <script src="services/weatherService.js"></script>
+        
+        <!-- Highcharts CDN -->
+        <script src="https://code.highcharts.com/highcharts.js" assync defer></script>
+        
+        <!-- MaterializeCSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link type="text/css" rel="stylesheet" href="css/main.css">
+	</header>
+	<main>
+		<div class="container">
+            <div ng-view></div>
+		</div>
+	</main>
+</html>
