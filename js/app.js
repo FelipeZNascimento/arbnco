@@ -49,6 +49,7 @@ app.controller('graphController', function($scope, $routeParams, DataService, We
     let forecastId = $routeParams.forecastId;
     let forecast = WeatherService.forecast;
     let baseAPI = "https://arbnco-mongodb.herokuapp.com/api/forecasts/";
+    let baseShareableLink = "omegafox.me/arbnco/#!/graph/";
 
     if (forecastId == null && forecast == null) { 
         // Error case, shouldn't be on the page
@@ -68,7 +69,7 @@ app.controller('graphController', function($scope, $routeParams, DataService, We
             forecast = data.weatherInfo;
             if (forecast) {
                 plotGraph(forecast);
-                $scope.shareLink = "omegafox.me/abnco/graph/" + forecastId;
+                $scope.shareLink = baseShareableLink + forecastId;
             }
         });
     }
@@ -78,7 +79,7 @@ app.controller('graphController', function($scope, $routeParams, DataService, We
         // let url = "http://localhost:8080/api/forecasts/";
 
         DataService.postToApi(url, forecast).then(function(response) {
-            $scope.shareLink = "omegafox.me/abnco/graph/" + response.data.id;
+            $scope.shareLink = baseShareableLink + response.data.id;
         });
     }
 
