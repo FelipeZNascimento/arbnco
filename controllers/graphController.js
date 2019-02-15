@@ -1,7 +1,6 @@
 app.controller('graphController', function($scope, $routeParams, $sce, $location, DataService, WeatherService) {
     let forecastId = $routeParams.forecastId;
     let forecast = WeatherService.forecast;
-    let baseWeatherAPI = "http://api.openweathermap.org/data/2.5/forecast?";
     let baseMongoAPI = "https://arbnco-mongodb.herokuapp.com/api/forecasts/";
     // let baseMongoAPI = "http://localhost:8080/api/forecasts/";
     let baseShareableLink = "http://omegafox.me/arbnco/#!/graph/";
@@ -27,14 +26,10 @@ app.controller('graphController', function($scope, $routeParams, $sce, $location
     } else { //forecast received through weatherService - user comes from home page
         plotGraph(forecast);
     }
-
-    $scope.shareForecast = function () {
-        let url = baseMongoAPI;
-
-        DataService.postToApi(url, forecast).then(function(response) {
-            $scope.shareLink = baseShareableLink + response.data.id;
-        });
-    }
+    
+    DataService.postToApi(baseMongoAPI, forecast).then(function(response) {
+        $scope.shareLink = baseShareableLink + response.data.id;
+    });
 
     $scope.copyLink = function () {
         var copyText = document.getElementById("shareableLink");
@@ -44,7 +39,7 @@ app.controller('graphController', function($scope, $routeParams, $sce, $location
     }
 
     function plotGraph (weather) {
-        let iframeURL = "https://maps.google.com/maps?q=" + weather.city.coord.lat + "," + weather.city.coord.lon + "&hl=es&z=12&amp&output=embed";
+        let iframeURL = "https://maps.google.com/maps?q=" + weather.city.coord.lat + "," + weather.city.coord.lon + "&hl=en&z=12&amp&output=embed";
         $scope.coordinates = $sce.trustAsResourceUrl(iframeURL);
         let title = weather.city.name + ", " + weather.city.country;
         let categories = [];

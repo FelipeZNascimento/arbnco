@@ -1,6 +1,8 @@
 app.factory('WeatherService', function() {
     return {
-        forecast: null
+        forecast: null,
+        cities: [],
+        citiesNum: 0
     };
 });
   

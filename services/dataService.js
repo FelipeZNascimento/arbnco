@@ -4,7 +4,6 @@ app.service('DataService', function($http, $q, WeatherService) {
         var deferred = $q.defer();
 
         $http.get(url).then(function (response) {
-            WeatherService.forecast = response.data;
             deferred.resolve(response.data);
         }, function (error) {
             deferred.reject(null);

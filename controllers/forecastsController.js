@@ -1,4 +1,4 @@
-app.controller('forecastsController', function($scope, DataService, WeatherService) {
+app.controller('forecastsController', function($scope, DataService) {
     let baseMongoAPI = "https://arbnco-mongodb.herokuapp.com/api/forecasts/";
     // let baseMongoAPI = "http://localhost:8080/api/forecasts/";
     let baseShareableLink = "#!/graph/";
@@ -12,7 +12,6 @@ app.controller('forecastsController', function($scope, DataService, WeatherServi
     DataService.getFromApi(url).then(function(data) {
         $scope.allForecasts = data;
         $scope.loading = false;
-
         createPagination();
     });
 
@@ -41,7 +40,7 @@ app.filter('startFrom', function() {
     return function(input, start) {
         if (!input)
             return;
-            
+
         start = +start;
         return input.slice(start);
     }
