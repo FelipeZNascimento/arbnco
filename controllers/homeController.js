@@ -36,7 +36,7 @@ app.controller('homeController', function($scope, $location, DataService, Weathe
         let url = baseWeatherAPI + "q="+city+"&units=metric&appid=1c676d764ae3b8e80931a979305b45b0";
         DataService.getFromApi(url).then(function(data) {
             if (data) {
-                WeatherService.forecast = response.data;
+                WeatherService.forecast = data;
                 $location.path( "/graph/" );
             }
         });
