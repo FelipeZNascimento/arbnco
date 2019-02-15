@@ -37,27 +37,96 @@ app.controller('mainController', function($scope, $location, DataService) {
     });    
 
     getWeather = function (city) {
-        let url = "http://api.openweathermap.org/data/2.5/forecast?q="+city+"&appid=1c676d764ae3b8e80931a979305b45b0";
+        let url = "http://api.openweathermap.org/data/2.5/forecast?q="+city+"&units=metric&appid=1c676d764ae3b8e80931a979305b45b0";
         DataService.getFromApi(url).then(function(data) {
             if (data)
                 $location.path( "/graph/" );
         });
     }
-
-    plotGraph = function (response) {
-        console.log("Foi");
-    }
 });
 
-app.controller('graphController', function($scope, $routeParams, WeatherService) {
+app.controller('graphController', function($scope, $routeParams, DataService, WeatherService) {
     $scope.forecastId = $routeParams.forecastId;
     $scope.forecast = WeatherService.forecast;
 
-    if ($scope.forecastId == null && $scope.forecast == null) {
-        //error
+    if ($scope.forecastId == null && $scope.forecast == null) { 
+        let url = "http://api.openweathermap.org/data/2.5/forecast?id=6322752&units=metric&appid=1c676d764ae3b8e80931a979305b45b0";
+        DataService.getFromApi(url).then(function(data) {
+            if (data)
+                plotGraph(data);
+        });
+
     } else if ($scope.forecast != null) {
         plotGraph($scope.forecast);
     } else {
-        //call API with ID
+        //call MongoDB with ID
+    }
+
+    $scope.shareForecast = function () {
+        //Save to MongoDB
+    }
+
+    function plotGraph (forecast) {
+        let title = forecast.city.name + ", " + forecast.city.country;
+        let categories = [];
+        let temperatures = [];
+        let humidity = [];
+        for (let i = 0; i < forecast.list.length; i++) {
+            let date = new Date(forecast.list[i].dt * 1000);
+            date = date.getHours() + "h - " + date.getDate() + "/" + date.getMonth();
+            categories.push(date);
+            temperatures.push(forecast.list[i].main.temp);
+            humidity.push(forecast.list[i].main.humidity);
+        }
+
+        Highcharts.chart('graphContainer', {
+            chart: {zoomType: 'xy'},
+            title: {text: title},
+            subtitle: {text: 'Source: openweathermap.org'},       
+            xAxis: {
+                categories: categories,
+                crosshair: true
+            },
+            yAxis: [{
+                labels: {
+                    format: '{value}°C',
+                    style: {color: Highcharts.getOptions().colors[2]}
+                },
+                title: {
+                    text: "Temperatures",
+                    style: {color: Highcharts.getOptions().colors[2]}
+                }
+            }, 
+            { // Secondary yAxis
+                title: {
+                    text: 'Humidity',
+                    style: {color: Highcharts.getOptions().colors[0]}
+                },
+                labels: {
+                    format: '{value} %',
+                    style: {color: Highcharts.getOptions().colors[0]}
+                },
+                opposite: true        
+            }],
+            tooltip: {
+                shared: true
+            },        
+            series: [{
+                type: 'spline',
+                name: 'Temperatures',
+                yAxis: 0,
+                data: temperatures,
+                tooltip: {valueSuffix: ' °C'},
+                color: Highcharts.getOptions().colors[2]
+            },
+            {
+                type: 'spline',
+                name: 'Humidity',
+                yAxis: 1,
+                data: humidity,
+                tooltip: {valueSuffix: ' %'},
+                color: Highcharts.getOptions().colors[0]
+            }]
+        });
     }
 });

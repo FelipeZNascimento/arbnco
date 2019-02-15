@@ -7,10 +7,19 @@
 body {
     background-color: #f6f6f6;
 }
-.container {
-    width: 100vw;
-    height: 100vh;
+
+.flex {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+}
+
+.graph {
+    width:100vw; 
+    height:100%;
+}
+
+.generate-button {
+    margin: 20px 0;
 }
