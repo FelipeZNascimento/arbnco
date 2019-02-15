@@ -1,0 +1,18 @@
+<div class="container">
+    <table class="striped centered">
+        <thead>
+            <tr>
+                <th>When</th>
+                <th>Where</th>
+                <th>Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="forecast in allForecasts | orderBy : date">
+                <td>{{ formatDate(forecast.date) }}</td>
+                <td>{{ forecast.weatherInfo.city.name }}</td>
+                <td><a ng-href="{{formatLink(forecast._id)}}">Click Here</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

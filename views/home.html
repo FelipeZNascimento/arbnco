@@ -1,5 +1,27 @@
-<h1>Weather Forecast</h1>
-<div class="input-field">
-    <input type="text" id="autocomplete-input" class="autocomplete center-align">
-    <label for="autocomplete-input">Search for a city</label>
-</div>    
+<div class="loading-mask fullscreen" ng-show="loading">
+    <div class="preloader-wrapper big active">
+        <div class="spinner-layer spinner-blue-only">
+            <div class="circle-clipper left">
+                <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+                <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+                <div class="circle"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="flex fullscreen weather-bg">
+    <div class="box shadowed">
+        <h1>Weather Forecast</h1>
+        <div class="input-field">
+            <input type="text" id="autocomplete-input" class="autocomplete center-align">
+            <label for="autocomplete-input">Search for a city</label>
+        </div>
+        <div class="center-align">
+            <a href="#!/forecasts/" class="waves-effect waves-light btn">Previous forecasts</a>
+        </div>
+    </div>       
+</div>

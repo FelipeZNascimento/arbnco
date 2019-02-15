@@ -1,59 +1,20 @@
-var app = angular.module('arbncoApp', ['ngRoute']);
-
-app.config(function($routeProvider, $locationProvider) {
-    
-    $routeProvider
-    .when('/', {
-        templateUrl: 'views/home.html',
-        controller: 'mainController'
-    })
-    .when('/graph/:forecastId', {
-        templateUrl: 'views/graph.html',
-        controller: 'graphController'
-    })
-    .when('/graph/', {
-        templateUrl: 'views/graph.html',
-        controller: 'graphController'
-    })
-    .otherwise({ redirectTo: '/' });
-});
-
-app.controller('mainController', function($scope, $location, DataService) {
-    let cities = [];
-
-    $.getJSON('assets/city.list.json', function(data) {
-        $scope.loading = true;
-        $.each( data, function( key, val ) {
-            cities[val.name + "," + val.country] = null;
-        });
-    }).done(function() {
-        $scope.loading = false;
-        $('input.autocomplete').autocomplete({
-            data: cities,
-            limit: 5,
-            minLength: 2,
-            onAutocomplete: getWeather
-        });
-    });    
-
-    getWeather = function (city) {
-        let url = "http://api.openweathermap.org/data/2.5/forecast?q="+city+"&units=metric&appid=1c676d764ae3b8e80931a979305b45b0";
-        DataService.getFromApi(url).then(function(data) {
-            if (data)
-                $location.path( "/graph/" );
-        });
-    }
-});
-
 app.controller('graphController', function($scope, $routeParams, DataService, WeatherService) {
     let forecastId = $routeParams.forecastId;
     let forecast = WeatherService.forecast;
-    let baseAPI = "https://arbnco-mongodb.herokuapp.com/api/forecasts/";
-    let baseShareableLink = "omegafox.me/arbnco/#!/graph/";
+    let baseWeatherAPI = "http://api.openweathermap.org/data/2.5/forecast?";
+    let baseMongoAPI = "https://arbnco-mongodb.herokuapp.com/api/forecasts/";
+    // let baseMongoAPI = "http://localhost:8080/api/forecasts/";
+    let baseShareableLink = "http://omegafox.me/arbnco/#!/graph/";
+
+    $scope.shareLink = null;
+
+    $(document).ready(function(){
+        $('.tooltipped').tooltip();
+    });    
 
     if (forecastId == null && forecast == null) { 
         // Error case, shouldn't be on the page
-        let url = "http://api.openweathermap.org/data/2.5/forecast?id=6322752&units=metric&appid=1c676d764ae3b8e80931a979305b45b0";
+        let url = baseWeatherAPI + "id=6322752&units=metric&appid=1c676d764ae3b8e80931a979305b45b0";
         DataService.getFromApi(url).then(function(data) {
             forecast = data;
             if (forecast)
@@ -63,8 +24,7 @@ app.controller('graphController', function($scope, $routeParams, DataService, We
     } else if (forecast != null) {
         plotGraph(forecast);
     } else {
-        let url = baseAPI + forecastId;
-        // let url = "http://localhost:8080/api/forecasts/" + forecastId;
+        let url = baseMongoAPI + forecastId;
         DataService.getFromApi(url).then(function(data) {
             forecast = data.weatherInfo;
             if (forecast) {
@@ -75,12 +35,18 @@ app.controller('graphController', function($scope, $routeParams, DataService, We
     }
 
     $scope.shareForecast = function () {
-        let url = baseAPI;
-        // let url = "http://localhost:8080/api/forecasts/";
+        let url = baseMongoAPI;
 
         DataService.postToApi(url, forecast).then(function(response) {
             $scope.shareLink = baseShareableLink + response.data.id;
         });
+    }
+
+    $scope.copyLink = function () {
+        var copyText = document.getElementById("shareableLink");
+        copyText.select();
+        document.execCommand("copy");
+        M.toast({html: 'Link copied!'})
     }
 
     function plotGraph (weather) {

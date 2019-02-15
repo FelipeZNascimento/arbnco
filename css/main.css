@@ -1,8 +1,12 @@
+/* General CSS */
 *, *:before, *:after{
     box-sizing:border-box;
     padding:0;
     margin:0;
     scroll-behavior: smooth;
+}
+a {
+    cursor: pointer;
 }
 body {
     background-color: #f6f6f6;
@@ -13,6 +17,58 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+}
+
+.fullscreen {
+    width: 100vw;
+    height: 100vh;
+}
+
+.shadowed {
+    -webkit-box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
+    box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
+}
+
+/* Home screen CSS */
+.weather-bg {
+    background-image: url("../img/bg.jpg");
+    background-repeat: repeat;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+.box {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 100px;
+}
+
+.loading-mask {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position:fixed;
+    left:0;
+    top:0;
+    z-index:1 !important;
+    background-color:rgba(0,0,0,0.3);
+}
+
+/* Graph screen CSS */
+.shareable-link {
+    padding: 0 16px;
+    line-height: 36px;
+    margin: 20px 0;
+    font-size: 14px;
+    height: 36px;
+
+    background-color: white;
+}
+
+.shareable-link img {
+    vertical-align: middle;
+    height: 32px;
+    border-left: 1px solid;
+    padding: 4px 8px;
+    margin-left: 8px;
 }
 
 .graph {
