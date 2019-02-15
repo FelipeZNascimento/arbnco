@@ -20,13 +20,30 @@ body {
 }
 
 .fullscreen {
-    width: 100vw;
     height: 100vh;
+    width: 100vw;
 }
-
+.bold {
+    font-weight: bold;
+}
 .shadowed {
     -webkit-box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
     box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
+}
+/* Header CSS */
+.header {
+    height: 60px;
+    flex-direction: row;
+    font-size: 20px;
+    padding: 0 100px;
+    margin: 0;
+}
+.header a {
+    color: #DDD;
+    transition: color 1s ease;
+}
+.header a:hover {
+    color: white;
 }
 
 /* Home screen CSS */
@@ -34,6 +51,7 @@ body {
     background-image: url("../img/bg.jpg");
     background-repeat: repeat;
     background-color: rgba(0, 0, 0, 0.6);
+    height: calc(100vh - 60px);
 }
 .box {
     background-color: rgba(255, 255, 255, 0.9);
@@ -55,11 +73,10 @@ body {
 /* Graph screen CSS */
 .shareable-link {
     padding: 0 16px;
-    line-height: 36px;
+    line-height: 54px;
     margin: 20px 0;
     font-size: 14px;
-    height: 36px;
-
+    height: 54px;
     background-color: white;
 }
 
@@ -78,4 +95,14 @@ body {
 
 .generate-button {
     margin: 20px 0;
+}
+
+/* Forecasts CSS */
+.forecastsTable td, th {
+    padding: 15px 5px !important;
+}
+
+.pagination {
+    padding: 20px;
+    flex-direction: row;
 }

@@ -1,18 +1,38 @@
 <div class="container">
-    <table class="striped centered">
+    <div class="loading-mask fullscreen" ng-show="loading">
+        <div class="preloader-wrapper big active">
+            <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+            
+    <table class="forecastsTable striped centered">
         <thead>
-            <tr>
-                <th>When</th>
-                <th>Where</th>
-                <th>Link</th>
+            <tr class="row">
+                <th class="col s4">When</th>
+                <th class="col s4">Where</th>
+                <th class="col s4">Link</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="forecast in allForecasts | orderBy : date">
-                <td>{{ formatDate(forecast.date) }}</td>
-                <td>{{ forecast.weatherInfo.city.name }}</td>
-                <td><a ng-href="{{formatLink(forecast._id)}}">Click Here</a></td>
+            <tr class="row" ng-repeat="forecast in allForecasts | startFrom: currentPage * pageSize | limitTo: pageSize">
+                <td class="col s4">{{ formatDate(forecast.date) }}</td>
+                <td class="col s4">{{ forecast.weatherInfo.city.name }}</td>
+                <td class="col s4"><a ng-href="{{formatLink(forecast._id)}}">Click Here</a></td>
             </tr>
         </tbody>
     </table>
+    <ul class="pagination flex">
+        <li ng-repeat="page in pagination" ng-class="{'active':currentPage == page}"><a ng-click="changePage(page)">{{page + 1}}</a></li>
+    </ul>
+    
 </div>

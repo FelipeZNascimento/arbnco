@@ -1,4 +1,4 @@
-app.controller('graphController', function($scope, $routeParams, DataService, WeatherService) {
+app.controller('graphController', function($scope, $routeParams, $sce, $location, DataService, WeatherService) {
     let forecastId = $routeParams.forecastId;
     let forecast = WeatherService.forecast;
     let baseWeatherAPI = "http://api.openweathermap.org/data/2.5/forecast?";
@@ -14,16 +14,8 @@ app.controller('graphController', function($scope, $routeParams, DataService, We
 
     if (forecastId == null && forecast == null) { 
         // Error case, shouldn't be on the page
-        let url = baseWeatherAPI + "id=6322752&units=metric&appid=1c676d764ae3b8e80931a979305b45b0";
-        DataService.getFromApi(url).then(function(data) {
-            forecast = data;
-            if (forecast)
-                plotGraph(forecast);
-        });
-
-    } else if (forecast != null) {
-        plotGraph(forecast);
-    } else {
+        $location.path( "/" );
+    } else if (forecastId != null) { //forecastId through shareable link
         let url = baseMongoAPI + forecastId;
         DataService.getFromApi(url).then(function(data) {
             forecast = data.weatherInfo;
@@ -32,6 +24,8 @@ app.controller('graphController', function($scope, $routeParams, DataService, We
                 $scope.shareLink = baseShareableLink + forecastId;
             }
         });
+    } else { //forecast received through weatherService - user comes from home page
+        plotGraph(forecast);
     }
 
     $scope.shareForecast = function () {
@@ -50,21 +44,45 @@ app.controller('graphController', function($scope, $routeParams, DataService, We
     }
 
     function plotGraph (weather) {
+        let iframeURL = "https://maps.google.com/maps?q=" + weather.city.coord.lat + "," + weather.city.coord.lon + "&hl=es&z=12&amp&output=embed";
+        $scope.coordinates = $sce.trustAsResourceUrl(iframeURL);
         let title = weather.city.name + ", " + weather.city.country;
         let categories = [];
         let temperatures = [];
         let humidity = [];
+        let rain = [];
+        let snow = [];
         for (let i = 0; i < weather.list.length; i++) {
             let date = new Date(weather.list[i].dt * 1000);
             date = date.getHours() + "h - " + date.getDate() + "/" + (date.getMonth() + 1);
             categories.push(date);
             temperatures.push(weather.list[i].main.temp);
             humidity.push(weather.list[i].main.humidity);
+
+            //If API returns "undefined" or no return at all I've chosen to set it to 0
+            if (weather.list[i].rain) {
+                let rainForecast = weather.list[i].rain["3h"];
+                if (rainForecast)
+                    rain.push(rainForecast);
+                else rain.push('0');                
+            } else 
+                rain.push('0');
+                
+            //If API returns "undefined" or no return at all I've chosen to set it to 0
+            if (weather.list[i].snow) {
+                let snowForecast = weather.list[i].snow["3h"];
+                if (snowForecast)
+                snow.push(snowForecast);
+                else snow.push('0');                
+            } else 
+                snow.push('0');
+
+                
         }
 
-        Highcharts.chart('graphContainer', {
+        Highcharts.chart('tempGraph', {
             chart: {zoomType: 'xy'},
-            title: {text: title},
+            title: {text: title + " - Temperature & Humidity"},
             subtitle: {text: 'Source: openweathermap.org'},       
             xAxis: {
                 categories: categories,
@@ -109,6 +127,56 @@ app.controller('graphController', function($scope, $routeParams, DataService, We
                 data: humidity,
                 tooltip: {valueSuffix: ' %'},
                 color: Highcharts.getOptions().colors[0]
+            }]
+        });
+
+        Highcharts.chart('rainGraph', {
+            chart: {zoomType: 'xy'},
+            title: {text: title + " - Rain & Snow"},
+            subtitle: {text: 'Source: openweathermap.org'},       
+            xAxis: {
+                categories: categories,
+                crosshair: true
+            },
+            yAxis: [{
+                labels: {
+                    format: '{value} mm',
+                    style: {color: Highcharts.getOptions().colors[1]}
+                },
+                title: {
+                    text: "Rain",
+                    style: {color: Highcharts.getOptions().colors[1]}
+                }
+            }, 
+            { // Secondary yAxis
+                title: {
+                    text: 'Snow',
+                    style: {color: Highcharts.getOptions().colors[3]}
+                },
+                labels: {
+                    format: '{value} mm',
+                    style: {color: Highcharts.getOptions().colors[3]}
+                },
+                opposite: true        
+            }],
+            tooltip: {
+                shared: true
+            },        
+            series: [{
+                type: 'spline',
+                name: 'Rain',
+                yAxis: 0,
+                data: rain,
+                tooltip: {valueSuffix: ' mm'},
+                color: Highcharts.getOptions().colors[1]
+            },
+            {
+                type: 'spline',
+                name: 'Snow',
+                yAxis: 1,
+                data: snow,
+                tooltip: {valueSuffix: ' mm'},
+                color: Highcharts.getOptions().colors[3]
             }]
         });
     }

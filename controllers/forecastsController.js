@@ -1,12 +1,24 @@
 app.controller('forecastsController', function($scope, DataService, WeatherService) {
     let baseMongoAPI = "https://arbnco-mongodb.herokuapp.com/api/forecasts/";
     // let baseMongoAPI = "http://localhost:8080/api/forecasts/";
-    let baseShareableLink = "http://omegafox.me/arbnco/#!/graph/";
-
+    let baseShareableLink = "#!/graph/";
     let url = baseMongoAPI;
+
+    $scope.pageSize = 10;
+    $scope.currentPage = 0;
+    $scope.pagination = [];
+    $scope.loading = true;
+
     DataService.getFromApi(url).then(function(data) {
         $scope.allForecasts = data;
+        $scope.loading = false;
+
+        createPagination();
     });
+
+    $scope.changePage = function(page){
+        $scope.currentPage = page;
+    }
 
     $scope.formatDate = function (date) {
         date = new Date(date);
@@ -18,4 +30,19 @@ app.controller('forecastsController', function($scope, DataService, WeatherServi
         return baseShareableLink + id;
     }
 
+    function createPagination() {
+        let numPages = Math.ceil($scope.allForecasts.length / 10);
+        for (let i = 0; i < numPages; i++)
+            $scope.pagination.push(i);
+    }
+});
+
+app.filter('startFrom', function() {
+    return function(input, start) {
+        if (!input)
+            return;
+            
+        start = +start;
+        return input.slice(start);
+    }
 });

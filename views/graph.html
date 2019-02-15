@@ -1,9 +1,20 @@
 <div class="flex">
-    <div id="graphContainer" class="graph">
-    </div>
-    <a ng-show="shareLink == null" class="waves-effect waves-light btn generate-button" ng-click=shareForecast()>Share Forecast</a>
+    <div id="tempGraph" class="graph"></div>
+    <div id="rainGraph" class="graph"></div>
+    <a ng-show="shareLink == null" class="waves-effect waves-light btn-large generate-button" ng-click=shareForecast()>Share Forecast</a>
     <div class="shareable-link shadowed" ng-show="shareLink != null">
         <input id="shareableLink" class="browser-default" type="text" value={{shareLink}}>
         <a class="tooltipped" data-position="bottom" data-tooltip="Copy link" ng-click="copyLink()"><img src="img/copy-icon.png"></a>
     </div>
+    <iframe 
+        width="100%" 
+        height="400px" 
+        frameborder="0" 
+        scrolling="yes"
+        marginheight="0" 
+        marginwidth="0" 
+        ng-src={{coordinates}}
+        >
+        </iframe>
+
 </div>
