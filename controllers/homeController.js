@@ -5,7 +5,6 @@ app.controller('homeController', function($scope, $location, DataService, Weathe
     let cities = WeatherService.cities;
     cities.length = WeatherService.citiesNum;
 
-    console.log(cities.length);
     if (cities.length == 0) {
         $.getJSON('assets/city.list.json', function(data) {
             $.each( data, function( key, val ) {
