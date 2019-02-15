@@ -46,37 +46,53 @@ app.controller('mainController', function($scope, $location, DataService) {
 });
 
 app.controller('graphController', function($scope, $routeParams, DataService, WeatherService) {
-    $scope.forecastId = $routeParams.forecastId;
-    $scope.forecast = WeatherService.forecast;
+    let forecastId = $routeParams.forecastId;
+    let forecast = WeatherService.forecast;
+    let baseAPI = "https://arbnco-mongodb.herokuapp.com/api/forecasts/";
 
-    if ($scope.forecastId == null && $scope.forecast == null) { 
+    if (forecastId == null && forecast == null) { 
+        // Error case, shouldn't be on the page
         let url = "http://api.openweathermap.org/data/2.5/forecast?id=6322752&units=metric&appid=1c676d764ae3b8e80931a979305b45b0";
         DataService.getFromApi(url).then(function(data) {
-            if (data)
-                plotGraph(data);
+            forecast = data;
+            if (forecast)
+                plotGraph(forecast);
         });
 
-    } else if ($scope.forecast != null) {
-        plotGraph($scope.forecast);
+    } else if (forecast != null) {
+        plotGraph(forecast);
     } else {
-        //call MongoDB with ID
+        let url = baseAPI + forecastId;
+        // let url = "http://localhost:8080/api/forecasts/" + forecastId;
+        DataService.getFromApi(url).then(function(data) {
+            forecast = data.weatherInfo;
+            if (forecast) {
+                plotGraph(forecast);
+                $scope.shareLink = "omegafox.me/abnco/graph/" + forecastId;
+            }
+        });
     }
 
     $scope.shareForecast = function () {
-        //Save to MongoDB
+        let url = baseAPI;
+        // let url = "http://localhost:8080/api/forecasts/";
+
+        DataService.postToApi(url, forecast).then(function(response) {
+            $scope.shareLink = "omegafox.me/abnco/graph/" + response.data.id;
+        });
     }
 
-    function plotGraph (forecast) {
-        let title = forecast.city.name + ", " + forecast.city.country;
+    function plotGraph (weather) {
+        let title = weather.city.name + ", " + weather.city.country;
         let categories = [];
         let temperatures = [];
         let humidity = [];
-        for (let i = 0; i < forecast.list.length; i++) {
-            let date = new Date(forecast.list[i].dt * 1000);
-            date = date.getHours() + "h - " + date.getDate() + "/" + date.getMonth();
+        for (let i = 0; i < weather.list.length; i++) {
+            let date = new Date(weather.list[i].dt * 1000);
+            date = date.getHours() + "h - " + date.getDate() + "/" + (date.getMonth() + 1);
             categories.push(date);
-            temperatures.push(forecast.list[i].main.temp);
-            humidity.push(forecast.list[i].main.humidity);
+            temperatures.push(weather.list[i].main.temp);
+            humidity.push(weather.list[i].main.humidity);
         }
 
         Highcharts.chart('graphContainer', {

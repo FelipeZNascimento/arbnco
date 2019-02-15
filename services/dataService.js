@@ -12,9 +12,9 @@ app.service('DataService', function($http, $q, WeatherService) {
         return deferred.promise;
     },
 
-    this.postToApi = function (url, jsonData) {
+    this.postToApi = function (url, object) {
         var deferred = $q.defer();
-        $http.post(url, jsonData).then(function (response) {
+        $http.post(url, object).then(function (response) {
             deferred.resolve(response);
         }, function (error) {
             deferred.reject(null);
