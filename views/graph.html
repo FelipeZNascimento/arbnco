@@ -1,20 +1,54 @@
-<div class="flex">
-    <div id="tempGraph" class="graph"></div>
-    <div id="rainGraph" class="graph"></div>
-    <a ng-show="shareLink == null" class="waves-effect waves-light btn-large generate-button" ng-click=shareForecast()>Share Forecast</a>
-    <div class="shareable-link shadowed" ng-show="shareLink != null">
-        <input id="shareableLink" class="browser-default" type="text" value={{shareLink}}>
-        <a class="tooltipped" data-position="bottom" data-tooltip="Copy link" ng-click="copyLink()"><img src="img/copy-icon.png"></a>
+<div class="loading-mask flex fullscreen" ng-show="loading">
+    <div class="preloader-wrapper big active">
+        <div class="spinner-layer spinner-blue-only">
+            <div class="circle-clipper left">
+                <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+                <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+                <div class="circle"></div>
+            </div>
+        </div>
     </div>
-    <iframe 
-        width="100%" 
-        height="400px" 
-        frameborder="0" 
-        scrolling="yes"
-        marginheight="0" 
-        marginwidth="0" 
-        ng-src={{coordinates}}
-        >
-        </iframe>
+</div>
 
+<div class="flex flex-row">
+    <!-- <div class="graph-container flex flex-column" ng-if="forecasts.length == 1">
+        <div id="tempGraph-0" class="graph"></div>
+        <div id="rainGraph-0" class="graph"></div>
+        <div class="shareable-link shadowed">
+            <input id="shareableLink0" class="browser-default" type="text" value={{forecasts[0].link}}>
+            <a class="tooltipped" data-position="bottom" data-tooltip="Copy link" ng-click="copyLink($index)"><img src="img/copy-icon.png"></a>
+        </div>
+        <iframe 
+            width="100%" 
+            height="400px" 
+            frameborder="0" 
+            scrolling="yes"
+            marginheight="0" 
+            marginwidth="0" 
+            ng-src={{forecasts[0].coordinates}}
+            >
+        </iframe>
+    </div> -->
+    <div class="graph-container flex flex-column" ng-repeat="forecast in forecasts track by $index">
+        <div ng-attr-id="{{'tempGraph-' + $index}}" class="graph"></div>
+        <div ng-attr-id="{{'rainGraph-' + $index}}" class="graph"></div>
+        <div class="shareable-link shadowed">
+            <input ng-attr-id="{{'shareableLink' + $index}}" class="browser-default" type="text" value={{forecast.link}}>
+            <a class="tooltipped" data-position="bottom" data-tooltip="Copy link" ng-click="copyLink($index)"><img src="img/copy-icon.png"></a>
+        </div>
+        <iframe 
+            width="100%" 
+            height="400px" 
+            frameborder="0" 
+            scrolling="yes"
+            marginheight="0" 
+            marginwidth="0" 
+            ng-src={{forecast.coordinates}}
+            >
+        </iframe>
+    </div>
 </div>

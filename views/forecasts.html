@@ -1,20 +1,20 @@
-<div class="container">
-    <div class="loading-mask fullscreen" ng-show="loading">
-        <div class="preloader-wrapper big active">
-            <div class="spinner-layer spinner-blue-only">
-                <div class="circle-clipper left">
-                    <div class="circle"></div>
-                </div>
-                <div class="gap-patch">
-                    <div class="circle"></div>
-                </div>
-                <div class="circle-clipper right">
-                    <div class="circle"></div>
-                </div>
+<div class="loading-mask flex fullscreen" ng-show="loading">
+    <div class="preloader-wrapper big active">
+        <div class="spinner-layer spinner-blue-only">
+            <div class="circle-clipper left">
+                <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+                <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+                <div class="circle"></div>
             </div>
         </div>
     </div>
-            
+</div>
+
+<div class="container">
     <table class="forecastsTable striped centered">
         <thead>
             <tr class="row">
@@ -31,7 +31,7 @@
             </tr>
         </tbody>
     </table>
-    <ul class="pagination flex">
+    <ul class="pagination flex flex-column">
         <li ng-repeat="page in pagination" ng-class="{'active':currentPage == page}"><a ng-click="changePage(page)">{{page + 1}}</a></li>
     </ul>
     
