@@ -17,12 +17,21 @@ app.controller('graphController', function($scope, $routeParams, $q, $sce, $loca
         let url = baseMongoAPI + forecastId;
 
         DataService.getFromApi(url).then(function(data) {
-            $scope.forecasts.push(data.weatherInfo);
-            if ($scope.forecasts.length > 0) {
-                $scope.forecasts[0].link = baseShareableLink + forecastId;
-                setTimeout(function(){setGraph($scope.forecasts)}, 200); //Timeout to allow DOM to be updated by AngularJS
-            }
             $scope.loading = false;
+            if (!data.weatherInfo) {
+                M.toast({html: 'ID not found.'})
+                $location.path("/");
+            } else {
+                $scope.forecasts.push(data.weatherInfo);
+                if ($scope.forecasts.length > 0) {
+                    $scope.forecasts[0].link = baseShareableLink + forecastId;
+                    setTimeout(function(){setGraph($scope.forecasts)}, 200); //Timeout to allow DOM to be updated by AngularJS
+                }
+            }
+        }, function () {
+            $scope.loading = false;
+            M.toast({html: 'Something went wrong. Please try again.'})
+            $location.path("/");
         });
     } else { //forecast received through weatherService - user comes from home page
         let promises = [];
@@ -57,7 +66,7 @@ app.controller('graphController', function($scope, $routeParams, $q, $sce, $loca
             // Conditions for error:
                 // Something went wrong with the API and/or the request;
                 // One or more cities weren't found;
-                
+
             $scope.loading = false;
             M.toast({html: 'Please select a city from the list and try again.'})
             $location.path("/");
