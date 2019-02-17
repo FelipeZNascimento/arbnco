@@ -25,7 +25,9 @@ app.controller('graphController', function($scope, $routeParams, $q, $sce, $loca
                 $scope.forecasts.push(data.weatherInfo);
                 if ($scope.forecasts.length > 0) {
                     $scope.forecasts[0].link = baseShareableLink + forecastId;
-                    setTimeout(function(){setGraph($scope.forecasts)}, 200); //Timeout to allow DOM to be updated by AngularJS
+                    setIframe($scope.forecasts);
+                    setTimeout(function(){setGraph()}, 200); //Timeout to allow DOM to be updated by AngularJS
+                    console.log($scope.forecasts[0].coordinates);
                 }
             }
         }, function () {
@@ -60,6 +62,7 @@ app.controller('graphController', function($scope, $routeParams, $q, $sce, $loca
                 }
 
                 $scope.loading = false;
+                setIframe($scope.forecasts);
                 setGraph();
             }.bind(this));
         }, function (error) {
@@ -80,12 +83,16 @@ app.controller('graphController', function($scope, $routeParams, $q, $sce, $loca
         M.toast({html: 'Link copied!'})
     }
 
-    function setGraph () {
+    function setIframe() {
         for (let i = 0; i < $scope.forecasts.length; i++) {
             // Google API needs a lot of steps to configure so I found this solution that only embeds map as iframe
             let iframeURL = "https://maps.google.com/maps?q=" + $scope.forecasts[i].city.coord.lat + "," + $scope.forecasts[i].city.coord.lon + "&hl=en&z=12&amp&output=embed";
             $scope.forecasts[i].coordinates = $sce.trustAsResourceUrl(iframeURL);
+        }
+    }
 
+    function setGraph () {
+        for (let i = 0; i < $scope.forecasts.length; i++) {
             let categories = [];
             let temperatures = [];
             let humidity = [];

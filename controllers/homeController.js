@@ -26,7 +26,7 @@ app.controller('homeController', function($scope, $location, DataService, Weathe
             $scope.$apply();
         });    
     } else {
-        inputAutocomplete(0);
+        setTimeout(function(){inputAutocomplete(0);}, 200); //Timeout to allow DOM to be updated by AngularJS        
         $scope.loading = false;
     }
 
